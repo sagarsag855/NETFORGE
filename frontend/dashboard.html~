@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NETFORGE | Security Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0b1120;
+            color: #e5e7eb;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #111827;
+            border-bottom: 1px solid #1f2937;
+            padding: 20px 35px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: #9ca3af;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #064e3b;
+            color: #6ee7b7;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            background: #34d399;
+            border-radius: 50%;
+        }
+
+        .scanner,
+        .findings,
+        .output {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .scanner h2,
+        .findings h2,
+        .output h2 {
+            margin-bottom: 8px;
+        }
+
+        .scanner p {
+            color: #9ca3af;
+            margin-bottom: 20px;
+        }
+
+        .scan-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        input {
+            flex: 1;
+            padding: 13px;
+            background: #0f172a;
+            border: 1px solid #374151;
+            border-radius: 7px;
+            color: white;
+            font-size: 15px;
+        }
+
+        button {
+            padding: 13px 22px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            background: #374151;
+            cursor: not-allowed;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .card-title {
+            color: #9ca3af;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .risk-bar {
+            height: 8px;
+            background: #1f2937;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .risk-fill {
+            height: 100%;
+            width: 0%;
+            background: #f59e0b;
+            transition: width 0.5s ease;
+        }
+
+        .finding {
+            background: #0f172a;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 12px;
+        }
+
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .severity {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .severity-LOW {
+            background: #064e3b;
+            color: #6ee7b7;
+        }
+
+        .severity-MEDIUM {
+            background: #78350f;
+            color: #fcd34d;
+        }
+
+        .severity-HIGH {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .finding p {
+            color: #9ca3af;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        pre {
+            background: #020617;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            padding: 18px;
+            overflow-x: auto;
+            color: #cbd5e1;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .message {
+            color: #9ca3af;
+            padding: 10px 0;
+        }
+
+        @media (max-width: 800px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .scan-controls {
+                flex-direction: column;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">NETFORGE</div>
+    <div class="subtitle">
+        Network Security Testing & Analysis Platform
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="status">
+        <span class="status-dot"></span>
+        Backend Online
+    </div>
+
+    <!-- NETWORK SCANNER -->
+
+    <section class="scanner">
+
+        <h2>Network Scanner</h2>
+
+        <p>
+            Run an authorized Nmap service detection scan.
+        </p>
+
+        <div class="scan-controls">
+
+            <input
+                type="text"
+                id="target"
+                value="127.0.0.1"
+                placeholder="Enter authorized target"
+            >
+
+            <button id="scanButton" onclick="startScan()">
+                Start Scan
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- SUMMARY -->
+
+    <section class="cards">
+
+        <div class="card">
+
+            <div class="card-title">
+                Target
+            </div>
+
+            <div class="card-value" id="targetDisplay">
+                —
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Risk Score
+            </div>
+
+            <div class="card-value" id="riskScore">
+                —
+            </div>
+
+            <div class="risk-bar">
+                <div
+                    class="risk-fill"
+                    id="riskFill">
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Findings
+            </div>
+
+            <div class="card-value" id="findingCount">
+                0
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- DNS -->
+
+    <section class="findings">
+
+        <h2>DNS Analysis</h2>
+
+        <div id="dnsContainer">
+
+            <div class="message">
+                No DNS analysis performed yet.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SECURITY FINDINGS -->
+
+    <section class="findings">
+
+        <h2>Security Findings</h2>
+
+        <div id="findingsContainer">
+
+            <div class="message">
+                No scan performed yet.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- NMAP OUTPUT -->
+
+    <section class="output">
+
+        <h2>Nmap Scan Output</h2>
+
+        <pre id="scanOutput">No scan performed yet.</pre>
+
+    </section>
+
+</div>
+
+
+<script>
+
+async function startScan() {
+
+    const targetInput =
+        document.getElementById("target");
+
+    const scanButton =
+        document.getElementById("scanButton");
+
+    const target =
+        targetInput.value.trim();
+
+
+    if (!target) {
+
+        alert("Please enter a target.");
+
+        return;
+    }
+
+
+    scanButton.disabled = true;
+
+    scanButton.textContent = "Scanning...";
+
+
+    document.getElementById(
+        "findingsContainer"
+    ).innerHTML =
+        '<div class="message">Running security scan...</div>';
+
+
+    document.getElementById(
+        "dnsContainer"
+    ).innerHTML =
+        '<div class="message">Running DNS analysis...</div>';
+
+
+    document.getElementById(
+        "scanOutput"
+    ).textContent =
+        "Running Nmap scan...";
+
+
+    try {
+
+        /* =========================
+           NMAP SCAN
+        ========================= */
+
+        const response = await fetch(
+            "http://127.0.0.1:5000/api/scan",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    target: target
+                })
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.error || "Nmap scan failed."
+            );
+
+        }
+
+
+        /* =========================
+           TARGET
+        ========================= */
+
+        document.getElementById(
+            "targetDisplay"
+        ).textContent = data.target;
+
+
+        /* =========================
+           RISK
+        ========================= */
+
+        document.getElementById(
+            "riskScore"
+        ).textContent = data.risk_score;
+
+
+        document.getElementById(
+            "riskFill"
+        ).style.width =
+            Math.min(data.risk_score, 100) + "%";
+
+
+        /* =========================
+           FINDINGS COUNT
+        ========================= */
+
+        document.getElementById(
+            "findingCount"
+        ).textContent =
+            data.findings.length;
+
+
+        /* =========================
+           FINDINGS
+        ========================= */
+
+        displayFindings(
+            data.findings
+        );
+
+
+        /* =========================
+           RAW OUTPUT
+        ========================= */
+
+        document.getElementById(
+            "scanOutput"
+        ).textContent =
+            data.nmap_output;
+
+
+        /* =========================
+           DNS ANALYSIS
+        ========================= */
+
+        const dnsResponse = await fetch(
+            "http://127.0.0.1:5000/api/dns",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    target: target
+                })
+            }
+        );
+
+
+        const dnsData =
+            await dnsResponse.json();
+
+
+        displayDNS(dnsData);
+
+
+    } catch (error) {
+
+        document.getElementById(
+            "findingsContainer"
+        ).innerHTML =
+            `<div class="message">
+                Scan failed: ${error.message}
+            </div>`;
+
+
+        document.getElementById(
+            "scanOutput"
+        ).textContent =
+            "Scan failed: " + error.message;
+
+    }
+
+
+    scanButton.disabled = false;
+
+    scanButton.textContent =
+        "Start Scan";
+
+}
+
+
+/* =================================
+   SECURITY FINDINGS
+================================= */
+
+function displayFindings(findings) {
+
+    const container =
+        document.getElementById(
+            "findingsContainer"
+        );
+
+
+    if (!findings ||
+        findings.length === 0) {
+
+        container.innerHTML =
+            '<div class="message">No security findings detected.</div>';
+
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    findings.forEach(function(finding) {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "finding";
+
+
+        div.innerHTML = `
+
+            <div class="finding-header">
+
+                <strong>
+                    ${finding.port}
+                    — ${finding.service}
+                </strong>
+
+                <span class="severity severity-${finding.severity}">
+                    ${finding.severity}
+                </span>
+
+            </div>
+
+            <p>
+                <strong>Version:</strong>
+                ${finding.version}
+            </p>
+
+            <p>
+                <strong>Risk:</strong>
+                ${finding.risk}
+            </p>
+
+            <p>
+                <strong>Recommendation:</strong>
+                ${finding.recommendation}
+            </p>
+
+        `;
+
+
+        container.appendChild(div);
+
+    });
+
+}
+
+
+/* =================================
+   DNS DISPLAY
+================================= */
+
+function displayDNS(data) {
+
+    const container =
+        document.getElementById(
+            "dnsContainer"
+        );
+
+
+    if (!data.success) {
+
+        container.innerHTML =
+            `<div class="message">
+                DNS Error:
+                ${data.dns.error}
+            </div>`;
+
+        return;
+    }
+
+
+    const dns =
+        data.dns;
+
+
+    const ipv4 =
+        dns.ipv4.length > 0
+            ? dns.ipv4.join(", ")
+            : "None";
+
+
+    const ipv6 =
+        dns.ipv6.length > 0
+            ? dns.ipv6.join(", ")
+            : "None";
+
+
+    container.innerHTML = `
+
+        <div class="finding">
+
+            <p>
+                <strong>Target:</strong>
+                ${dns.target}
+            </p>
+
+            <p>
+                <strong>Hostname:</strong>
+                ${dns.hostname}
+            </p>
+
+            <p>
+                <strong>IPv4:</strong>
+                ${ipv4}
+            </p>
+
+            <p>
+                <strong>IPv6:</strong>
+                ${ipv6}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                Resolved successfully
+            </p>
+
+        </div>
+
+    `;
+
+}
+
+</script>
+
+</body>
+</html>

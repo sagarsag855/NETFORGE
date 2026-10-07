@@ -1,0 +1,2404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>NETFORGE | Network Security Platform</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+    background: #0a0f16;
+    color: #e5e7eb;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app {
+    min-height: 100vh;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    background: #0d131c;
+    border-right: 1px solid #1f2937;
+    padding: 25px 18px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 35px;
+}
+
+.logo-mark {
+    width: 42px;
+    height: 42px;
+    border: 2px solid #38bdf8;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #38bdf8;
+}
+
+.logo-text h1 {
+    margin: 0;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+.logo-text span {
+    color: #64748b;
+    font-size: 11px;
+}
+
+.nav-title {
+    color: #475569;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 25px 10px 10px;
+}
+
+.nav-item {
+    display: block;
+    padding: 12px;
+    border-radius: 8px;
+    color: #94a3b8;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.nav-item.active,
+.nav-item:hover {
+    background: #17202d;
+    color: #e2e8f0;
+}
+
+.mode-card {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 20px;
+    padding: 15px;
+    border: 1px solid #1e3a4a;
+    border-radius: 10px;
+    background: #0c1720;
+}
+
+.mode-card-title {
+    font-size: 11px;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.mode-status {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #38bdf8;
+}
+
+.dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    margin-right: 6px;
+}
+
+/* ============================================================
+   MAIN
+   ============================================================ */
+
+.main {
+    margin-left: 250px;
+    padding: 28px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.page-title h2 {
+    margin: 0;
+    font-size: 25px;
+}
+
+.page-title p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.backend-status {
+    padding: 9px 14px;
+    border: 1px solid #14532d;
+    background: #0c1b13;
+    border-radius: 8px;
+    color: #4ade80;
+    font-size: 13px;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.card {
+    background: #0f1722;
+    border: 1px solid #1f2937;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.grid {
+    display: grid;
+    gap: 18px;
+}
+
+.grid-4 {
+    grid-template-columns:
+        repeat(4, 1fr);
+}
+
+.grid-2 {
+    grid-template-columns:
+        repeat(2, 1fr);
+}
+
+.stat {
+    min-height: 115px;
+}
+
+.stat-label {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.stat-value {
+    font-size: 30px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.stat-sub {
+    color: #64748b;
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+/* ============================================================
+   SCAN PANEL
+   ============================================================ */
+
+.scan-panel {
+    margin-bottom: 20px;
+}
+
+.scan-row {
+    display: grid;
+    grid-template-columns:
+        1fr 220px auto;
+    gap: 12px;
+}
+
+.input,
+.select {
+    width: 100%;
+    background: #090e15;
+    color: #e2e8f0;
+    border: 1px solid #263244;
+    border-radius: 8px;
+    padding: 13px;
+    outline: none;
+}
+
+.input:focus,
+.select:focus {
+    border-color: #38bdf8;
+}
+
+.primary-btn {
+    border: 0;
+    border-radius: 8px;
+    padding: 0 22px;
+    background: #0284c7;
+    color: white;
+    font-weight: 700;
+}
+
+.primary-btn:hover {
+    background: #0369a1;
+}
+
+.primary-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.authorization {
+    display: none;
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #854d0e;
+    background: #1c170b;
+}
+
+.authorization.visible {
+    display: block;
+}
+
+.warning {
+    color: #fbbf24;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #cbd5e1;
+    font-size: 13px;
+}
+
+.checkbox-row input {
+    accent-color: #0284c7;
+}
+
+/* ============================================================
+   PROGRESS
+   ============================================================ */
+
+.progress {
+    display: none;
+    margin-top: 15px;
+}
+
+.progress.visible {
+    display: block;
+}
+
+.progress-bar {
+    height: 5px;
+    border-radius: 5px;
+    background: #172033;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 30%;
+    background: #38bdf8;
+    animation: progress 1.5s infinite;
+}
+
+@keyframes progress {
+
+    0% {
+        transform: translateX(-120%);
+    }
+
+    100% {
+        transform: translateX(350%);
+    }
+
+}
+
+/* ============================================================
+   RISK
+   ============================================================ */
+
+.risk-box {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.risk-score {
+    font-size: 52px;
+    font-weight: 800;
+}
+
+.risk-level {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* ============================================================
+   FINDINGS
+   ============================================================ */
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 11px;
+    border-bottom: 1px solid #1f2937;
+    text-align: left;
+    font-size: 12px;
+}
+
+th {
+    color: #64748b;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.badge-high {
+    background: #3f1515;
+    color: #f87171;
+}
+
+.badge-medium {
+    background: #3b2a0b;
+    color: #fbbf24;
+}
+
+.badge-low {
+    background: #0d3020;
+    color: #4ade80;
+}
+
+.badge-info {
+    background: #172554;
+    color: #60a5fa;
+}
+
+/* ============================================================
+   OUTPUT
+   ============================================================ */
+
+pre {
+    background: #080c12;
+    border: 1px solid #1f2937;
+    padding: 15px;
+    border-radius: 8px;
+    max-height: 350px;
+    overflow: auto;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+/* ============================================================
+   MODULE BUTTONS
+   ============================================================ */
+
+.module-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.secondary-btn {
+    background: #151e2b;
+    color: #cbd5e1;
+    border: 1px solid #263244;
+    padding: 9px 14px;
+    border-radius: 7px;
+}
+
+.secondary-btn:hover {
+    background: #1c2736;
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+
+.toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    background: #111827;
+    border: 1px solid #334155;
+    padding: 14px 18px;
+    border-radius: 8px;
+    display: none;
+    max-width: 350px;
+    font-size: 13px;
+    z-index: 1000;
+}
+
+.toast.show {
+    display: block;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+.footer {
+    text-align: center;
+    padding: 30px 0 10px;
+    color: #475569;
+    font-size: 11px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1100px) {
+
+    .grid-4 {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 800px) {
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    .mode-card {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        margin-top: 20px;
+    }
+
+    .main {
+        margin-left: 0;
+    }
+
+    .scan-row,
+    .grid-2,
+    .grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+<!-- ========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-mark">
+            NF
+        </div>
+
+        <div class="logo-text">
+
+            <h1>NETFORGE</h1>
+
+            <span>
+                Network Security Platform
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="nav-title">
+        Platform
+    </div>
+
+    <div class="nav-item active">
+        Dashboard
+    </div>
+
+    <div class="nav-item">
+        Network Scanner
+    </div>
+
+    <div class="nav-item">
+        DNS Intelligence
+    </div>
+
+    <div class="nav-item">
+        Traffic Analysis
+    </div>
+
+    <div class="nav-item">
+        Security Analytics
+    </div>
+
+
+    <div class="nav-title">
+        Security
+    </div>
+
+    <div class="nav-item">
+        Risk Assessment
+    </div>
+
+    <div class="nav-item">
+        Scan History
+    </div>
+
+    <div class="nav-item">
+        Reports
+    </div>
+
+
+    <div class="mode-card">
+
+        <div class="mode-card-title">
+            Operating Mode
+        </div>
+
+        <div class="mode-status">
+            <span class="dot"></span>
+            Authorized Testing
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- ========================================================
+     MAIN
+========================================================= -->
+
+<main class="main">
+
+    <div class="topbar">
+
+        <div class="page-title">
+
+            <h2>Security Dashboard</h2>
+
+            <p>
+                Network visibility, assessment and risk intelligence
+            </p>
+
+        </div>
+
+        <div
+            class="backend-status"
+            id="backendStatus"
+        >
+            ● Backend Online
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SCAN PANEL
+    ====================================================== -->
+
+    <section class="card scan-panel">
+
+        <div class="card-title">
+            Security Assessment
+        </div>
+
+        <div class="scan-row">
+
+            <input
+                id="target"
+                class="input"
+                type="text"
+                value="127.0.0.1"
+                placeholder="Enter authorized target"
+            >
+
+            <select
+                id="scanMode"
+                class="select"
+                onchange="updateAuthorizationUI()"
+            >
+
+                <option value="local">
+                    Local Lab
+                </option>
+
+                <option value="external">
+                    Authorized External
+                </option>
+
+            </select>
+
+            <button
+                id="scanButton"
+                class="primary-btn"
+                onclick="startScan()"
+            >
+                START SCAN
+            </button>
+
+        </div>
+
+
+        <div
+            id="authorization"
+            class="authorization"
+        >
+
+            <div class="warning">
+
+                ⚠ Authorized External Mode
+
+                <br>
+
+                Only assess public systems for which you have
+                explicit permission.
+
+            </div>
+
+            <label class="checkbox-row">
+
+                <input
+                    type="checkbox"
+                    id="authorizationCheck"
+                >
+
+                I confirm that I am authorized to test this target.
+
+            </label>
+
+        </div>
+
+
+        <div
+            id="progress"
+            class="progress"
+        >
+
+            <div
+                class="progress-bar"
+            >
+
+                <div
+                    class="progress-fill"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <section class="grid grid-4">
+
+        <div class="card stat">
+
+            <div class="stat-label">
+                TOTAL SCANS
+            </div>
+
+            <div
+                class="stat-value"
+                id="totalScans"
+            >
+                0
+            </div>
+
+            <div class="stat-sub">
+                Assessments recorded
+            </div>
+
+        </div>
+
+
+        <div class="card stat">
+
+            <div class="stat-label">
+                UNIQUE TARGETS
+            </div>
+
+            <div
+                class="stat-value"
+                id="uniqueTargets"
+            >
+                0
+            </div>
+
+            <div class="stat-sub">
+                Distinct targets
+            </div>
+
+        </div>
+
+
+        <div class="card stat">
+
+            <div class="stat-label">
+                HIGH RISK
+            </div>
+
+            <div
+                class="stat-value"
+                id="highRiskScans"
+            >
+                0
+            </div>
+
+            <div class="stat-sub">
+                High / critical assessments
+            </div>
+
+        </div>
+
+
+        <div class="card stat">
+
+            <div class="stat-label">
+                AVERAGE RISK
+            </div>
+
+            <div
+                class="stat-value"
+                id="averageRisk"
+            >
+                0
+            </div>
+
+            <div class="stat-sub">
+                Current history average
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <br>
+
+
+    <!-- =====================================================
+         RISK ASSESSMENT
+    ====================================================== -->
+
+    <section class="grid grid-2">
+
+        <div class="card">
+
+            <div class="card-title">
+                Current Risk Assessment
+            </div>
+
+            <div class="risk-box">
+
+                <div
+                    class="risk-score"
+                    id="riskScore"
+                >
+                    0
+                </div>
+
+                <div>
+
+                    <div
+                        id="riskLevel"
+                        class="risk-level"
+                    >
+                        LOW
+                    </div>
+
+                    <div
+                        id="riskFactors"
+                        class="risk-level"
+                    >
+                        No assessment available.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Recommendations
+            </div>
+
+            <ul
+                id="recommendations"
+                style="
+                    color:#94a3b8;
+                    font-size:13px;
+                    line-height:1.7;
+                "
+            >
+
+                <li>
+                    Run a security assessment to generate recommendations.
+                </li>
+
+            </ul>
+
+        </div>
+
+    </section>
+
+
+    <br>
+
+
+    <!-- =====================================================
+         ANALYTICS
+    ====================================================== -->
+
+    <section class="grid grid-2">
+
+        <div class="card">
+
+            <div class="card-title">
+                Risk History
+            </div>
+
+            <canvas
+                id="riskChart"
+                height="130"
+            ></canvas>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Severity Distribution
+            </div>
+
+            <canvas
+                id="severityChart"
+                height="130"
+            ></canvas>
+
+        </div>
+
+    </section>
+
+
+    <br>
+
+
+    <!-- =====================================================
+         SECURITY FINDINGS
+    ====================================================== -->
+
+    <section class="card">
+
+        <div class="card-title">
+            Security Findings
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Port</th>
+                        <th>Service</th>
+                        <th>Version</th>
+                        <th>Severity</th>
+                        <th>Risk</th>
+                        <th>Recommendation</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="findingsBody">
+
+                    <tr>
+
+                        <td colspan="6">
+                            No findings available.
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <br>
+
+
+    <!-- =====================================================
+         DNS + TRACEROUTE
+    ====================================================== -->
+
+    <section class="grid grid-2">
+
+        <div class="card">
+
+            <div class="card-title">
+                DNS Intelligence
+            </div>
+
+            <div id="dnsResult">
+
+                <p>
+                    No DNS assessment available.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Traceroute Analysis
+            </div>
+
+            <pre id="tracerouteOutput">
+No traceroute data available.
+            </pre>
+
+        </div>
+
+    </section>
+
+
+    <br>
+
+
+    <!-- =====================================================
+         TRAFFIC
+    ====================================================== -->
+
+    <section class="card">
+
+        <div class="card-title">
+            TShark Traffic Analyzer
+        </div>
+
+        <div class="module-actions">
+
+            <button
+                class="secondary-btn"
+                onclick="loadInterfaces()"
+            >
+                Detect Interfaces
+            </button>
+
+            <button
+                class="secondary-btn"
+                onclick="captureTraffic()"
+            >
+                Capture Traffic
+            </button>
+
+        </div>
+
+        <pre id="trafficOutput">
+Traffic analyzer ready.
+        </pre>
+
+    </section>
+
+
+    <br>
+
+
+    <!-- =====================================================
+         NMAP OUTPUT
+    ====================================================== -->
+
+    <section class="card">
+
+        <div class="card-title">
+            Nmap Scanner Output
+        </div>
+
+        <pre id="nmapOutput">
+No scan executed.
+        </pre>
+
+    </section>
+
+
+    <br>
+
+
+    <!-- =====================================================
+         REPORTS + HISTORY
+    ====================================================== -->
+
+    <section class="grid grid-2">
+
+        <div class="card">
+
+            <div class="card-title">
+                Security Report
+            </div>
+
+            <p
+                id="reportStatus"
+                style="color:#64748b;font-size:13px;"
+            >
+                Generate a report after an assessment.
+            </p>
+
+            <button
+                class="secondary-btn"
+                onclick="generateReport()"
+            >
+                Generate Security Report
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Scan History
+            </div>
+
+            <div
+                class="table-wrap"
+                style="max-height:250px;"
+            >
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Target</th>
+                            <th>Date</th>
+                            <th>Risk</th>
+                            <th>Level</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="historyBody">
+
+                        <tr>
+
+                            <td colspan="5">
+                                No history available.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <div class="footer">
+
+        NETFORGE · Network Security Testing Platform
+
+        <br>
+
+        Authorized security assessment environment
+
+    </div>
+
+</main>
+
+</div>
+
+
+<!-- ============================================================
+     TOAST
+============================================================= -->
+
+<div
+    id="toast"
+    class="toast"
+></div>
+
+
+<script>
+
+let latestFindings = [];
+let latestDNS = {};
+let latestTraffic = {};
+let latestTraceroute = {};
+let latestAssessment = {};
+let latestNmapOutput = "";
+
+let riskChart = null;
+let severityChart = null;
+
+
+/* ============================================================
+   TOAST
+============================================================ */
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 4000);
+}
+
+
+/* ============================================================
+   AUTHORIZATION UI
+============================================================ */
+
+function updateAuthorizationUI() {
+
+    const mode =
+        document.getElementById("scanMode").value;
+
+    const authorization =
+        document.getElementById("authorization");
+
+    const checkbox =
+        document.getElementById("authorizationCheck");
+
+    if (mode === "external") {
+
+        authorization.classList.add("visible");
+
+    } else {
+
+        authorization.classList.remove("visible");
+
+        checkbox.checked = false;
+
+    }
+
+}
+
+
+/* ============================================================
+   START SCAN
+============================================================ */
+
+async function startScan() {
+
+    const target =
+        document.getElementById("target")
+        .value
+        .trim();
+
+    const mode =
+        document.getElementById("scanMode")
+        .value;
+
+    const checkbox =
+        document.getElementById("authorizationCheck");
+
+    const button =
+        document.getElementById("scanButton");
+
+    const progress =
+        document.getElementById("progress");
+
+
+    if (!target) {
+
+        showToast("Enter a target first.");
+
+        return;
+
+    }
+
+
+    if (
+        mode === "external"
+        &&
+        !checkbox.checked
+    ) {
+
+        showToast(
+            "Confirm authorization before using External Mode."
+        );
+
+        return;
+
+    }
+
+
+    button.disabled = true;
+
+    button.textContent = "SCANNING...";
+
+    progress.classList.add("visible");
+
+
+    try {
+
+        /* ----------------------------------------------------
+           NMAP
+        ---------------------------------------------------- */
+
+        const scanResponse =
+            await fetch(
+                "/api/scan",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        target: target,
+                        mode: mode
+                    })
+                }
+            );
+
+        const scanData =
+            await scanResponse.json();
+
+
+        if (!scanData.success) {
+
+            throw new Error(
+                scanData.error ||
+                "Scan failed."
+            );
+
+        }
+
+
+        latestFindings =
+            scanData.findings || [];
+
+        latestNmapOutput =
+            scanData.nmap_output || "";
+
+
+        document.getElementById(
+            "nmapOutput"
+        ).textContent =
+            latestNmapOutput;
+
+
+        renderFindings(
+            latestFindings
+        );
+
+
+        /* ----------------------------------------------------
+           DNS
+        ---------------------------------------------------- */
+
+        const dnsResponse =
+            await fetch(
+                "/api/dns",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        target: target,
+                        mode: mode
+                    })
+                }
+            );
+
+
+        const dnsData =
+            await dnsResponse.json();
+
+
+        if (
+            !dnsData.success
+            &&
+            dnsData.authorized === false
+        ) {
+
+            throw new Error(
+                dnsData.error
+            );
+
+        }
+
+
+        latestDNS =
+            dnsData.dns || {};
+
+        renderDNS(
+            latestDNS
+        );
+
+
+        /* ----------------------------------------------------
+           TRACEROUTE
+        ---------------------------------------------------- */
+
+        const tracerouteResponse =
+            await fetch(
+                "/api/traceroute",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        target: target,
+                        mode: mode
+                    })
+                }
+            );
+
+
+        const tracerouteData =
+            await tracerouteResponse.json();
+
+
+        if (
+            !tracerouteData.success
+            &&
+            tracerouteData.authorized === false
+        ) {
+
+            throw new Error(
+                tracerouteData.error
+            );
+
+        }
+
+
+        latestTraceroute =
+            tracerouteData;
+
+        document.getElementById(
+            "tracerouteOutput"
+        ).textContent =
+            tracerouteData.output ||
+            tracerouteData.error ||
+            "No traceroute output.";
+
+
+        /* ----------------------------------------------------
+           RISK
+        ---------------------------------------------------- */
+
+        const riskResponse =
+            await fetch(
+                "/api/risk",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        target: target,
+
+                        mode: mode,
+
+                        findings:
+                            latestFindings,
+
+                        dns:
+                            latestDNS,
+
+                        traffic:
+                            latestTraffic
+
+                    })
+                }
+            );
+
+
+        const riskData =
+            await riskResponse.json();
+
+
+        if (!riskData.success) {
+
+            throw new Error(
+                riskData.error ||
+                "Risk assessment failed."
+            );
+
+        }
+
+
+        latestAssessment =
+            riskData.assessment || {};
+
+
+        renderRisk(
+            latestAssessment
+        );
+
+
+        /* ----------------------------------------------------
+           REFRESH DATA
+        ---------------------------------------------------- */
+
+        await loadAnalytics();
+
+        await loadHistory();
+
+
+        showToast(
+            "Security assessment completed successfully."
+        );
+
+    } catch (error) {
+
+        showToast(
+            error.message
+        );
+
+    } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+            "START SCAN";
+
+        progress.classList.remove(
+            "visible"
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   FINDINGS
+============================================================ */
+
+function renderFindings(findings) {
+
+    const body =
+        document.getElementById(
+            "findingsBody"
+        );
+
+    if (!findings.length) {
+
+        body.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    No open services detected.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    body.innerHTML =
+        findings.map(
+            finding => {
+
+                const severity =
+                    (
+                        finding.severity ||
+                        "INFO"
+                    ).toLowerCase();
+
+                return `
+                    <tr>
+
+                        <td>
+                            ${finding.port || "-"}
+                        </td>
+
+                        <td>
+                            ${finding.service || "-"}
+                        </td>
+
+                        <td>
+                            ${finding.version || "-"}
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="badge badge-${severity}"
+                            >
+                                ${(
+                                    finding.severity ||
+                                    "INFO"
+                                )}
+                            </span>
+
+                        </td>
+
+                        <td>
+                            ${finding.risk || 0}
+                        </td>
+
+                        <td>
+                            ${finding.recommendation || "-"}
+                        </td>
+
+                    </tr>
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* ============================================================
+   RISK
+============================================================ */
+
+function renderRisk(assessment) {
+
+    document.getElementById(
+        "riskScore"
+    ).textContent =
+        assessment.score ?? 0;
+
+    document.getElementById(
+        "riskLevel"
+    ).textContent =
+        assessment.security_level ||
+        "LOW";
+
+
+    const factors =
+        assessment.factors || [];
+
+    document.getElementById(
+        "riskFactors"
+    ).textContent =
+        factors.length
+            ? factors.join(" ")
+            : "No major risk factors detected.";
+
+
+    const recommendations =
+        assessment.recommendations || [];
+
+    const list =
+        document.getElementById(
+            "recommendations"
+        );
+
+
+    if (!recommendations.length) {
+
+        list.innerHTML =
+            "<li>No recommendations available.</li>";
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+        recommendations.map(
+            item =>
+                `<li>${item}</li>`
+        ).join("");
+
+}
+
+
+/* ============================================================
+   DNS
+============================================================ */
+
+function renderDNS(dns) {
+
+    const element =
+        document.getElementById(
+            "dnsResult"
+        );
+
+
+    element.innerHTML = `
+
+        <p>
+            <strong>Hostname:</strong>
+            ${dns.hostname || "-"}
+        </p>
+
+        <p>
+            <strong>IPv4:</strong>
+            ${
+                (dns.ipv4 || []).join(", ")
+                || "-"
+            }
+        </p>
+
+        <p>
+            <strong>IPv6:</strong>
+            ${
+                (dns.ipv6 || []).join(", ")
+                || "-"
+            }
+        </p>
+
+        <p>
+            <strong>Status:</strong>
+            ${dns.error || "NORMAL"}
+        </p>
+
+    `;
+
+}
+
+
+/* ============================================================
+   ANALYTICS
+============================================================ */
+
+async function loadAnalytics() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/analytics"
+            );
+
+        const data =
+            await response.json();
+
+        if (!data.success) {
+
+            return;
+
+        }
+
+
+        const analytics =
+            data.analytics;
+
+
+        document.getElementById(
+            "totalScans"
+        ).textContent =
+            analytics.total_scans;
+
+        document.getElementById(
+            "uniqueTargets"
+        ).textContent =
+            analytics.unique_targets;
+
+        document.getElementById(
+            "highRiskScans"
+        ).textContent =
+            analytics.high_risk_scans;
+
+        document.getElementById(
+            "averageRisk"
+        ).textContent =
+            analytics.average_risk;
+
+
+        renderCharts(
+            analytics
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Analytics error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   CHARTS
+============================================================ */
+
+function renderCharts(analytics) {
+
+    const history =
+        analytics.risk_history || [];
+
+
+    const labels =
+        history.map(
+            item => "#" + item.id
+        );
+
+    const riskValues =
+        history.map(
+            item => item.risk
+        );
+
+
+    const riskCanvas =
+        document.getElementById(
+            "riskChart"
+        );
+
+
+    if (riskChart) {
+
+        riskChart.destroy();
+
+    }
+
+
+    riskChart =
+        new Chart(
+            riskCanvas,
+            {
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+                        {
+                            label:
+                                "Risk Score",
+
+                            data:
+                                riskValues,
+
+                            tension:
+                                0.3,
+
+                            borderWidth:
+                                2,
+
+                            fill:
+                                false
+                        }
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+
+                    scales: {
+
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+
+    const severity =
+        analytics.severity_distribution ||
+        {};
+
+
+    const severityCanvas =
+        document.getElementById(
+            "severityChart"
+        );
+
+
+    if (severityChart) {
+
+        severityChart.destroy();
+
+    }
+
+
+    severityChart =
+        new Chart(
+            severityCanvas,
+            {
+                type: "doughnut",
+
+                data: {
+
+                    labels: [
+                        "HIGH",
+                        "MEDIUM",
+                        "LOW",
+                        "INFO"
+                    ],
+
+                    datasets: [
+                        {
+                            data: [
+                                severity.HIGH || 0,
+                                severity.MEDIUM || 0,
+                                severity.LOW || 0,
+                                severity.INFO || 0
+                            ],
+
+                            borderWidth: 0
+                        }
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    plugins: {
+
+                        legend: {
+                            position: "bottom"
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+/* ============================================================
+   HISTORY
+============================================================ */
+
+async function loadHistory() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/history"
+            );
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            return;
+
+        }
+
+
+        const scans =
+            data.scans || [];
+
+
+        const body =
+            document.getElementById(
+                "historyBody"
+            );
+
+
+        if (!scans.length) {
+
+            body.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        No history available.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        body.innerHTML =
+            scans.map(
+                scan => `
+
+                    <tr>
+
+                        <td>
+                            #${scan.id}
+                        </td>
+
+                        <td>
+                            ${scan.target}
+                        </td>
+
+                        <td>
+                            ${scan.scan_date}
+                        </td>
+
+                        <td>
+                            ${scan.risk_score}
+                        </td>
+
+                        <td>
+                            ${scan.security_level}
+                        </td>
+
+                    </tr>
+
+                `
+            ).join("");
+
+    } catch (error) {
+
+        console.error(
+            "History error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   INTERFACES
+============================================================ */
+
+async function loadInterfaces() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/traffic/interfaces"
+            );
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            showToast(
+                data.error ||
+                "Unable to detect interfaces."
+            );
+
+            return;
+
+        }
+
+
+        const interfaces =
+            data.interfaces || [];
+
+
+        document.getElementById(
+            "trafficOutput"
+        ).textContent =
+            interfaces
+                .map(
+                    item =>
+                        `${item.id}. ${item.name}`
+                )
+                .join("\n")
+                ||
+                "No interfaces detected.";
+
+    } catch (error) {
+
+        showToast(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   TRAFFIC
+============================================================ */
+
+async function captureTraffic() {
+
+    const output =
+        document.getElementById(
+            "trafficOutput"
+        );
+
+
+    output.textContent =
+        "Capturing traffic...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/traffic",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        interface: "any",
+                        duration: 10
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.error ||
+                "Traffic capture failed."
+            );
+
+        }
+
+
+        latestTraffic =
+            data;
+
+
+        output.textContent =
+            `Interface: ${
+                data.interface
+            }\n` +
+            `Duration: ${
+                data.duration
+            } seconds\n` +
+            `Packets: ${
+                data.packet_count
+            }\n\n` +
+            (data.packets || [])
+                .slice(0, 20)
+                .map(
+                    packet =>
+                        `${packet.number} | ${
+                            packet.source
+                        } | ${
+                            packet.destination
+                        } | ${
+                            packet.protocol
+                        }`
+                )
+                .join("\n");
+
+
+        showToast(
+            "Traffic capture completed."
+        );
+
+    } catch (error) {
+
+        output.textContent =
+            error.message;
+
+        showToast(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   REPORT
+============================================================ */
+
+async function generateReport() {
+
+    const target =
+        document.getElementById(
+            "target"
+        ).value.trim();
+
+
+    const mode =
+        document.getElementById(
+            "scanMode"
+        ).value;
+
+
+    if (!latestAssessment.score &&
+        latestFindings.length === 0) {
+
+        showToast(
+            "Run a security assessment first."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/report",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        target: target,
+
+                        mode: mode,
+
+                        assessment:
+                            latestAssessment,
+
+                        findings:
+                            latestFindings,
+
+                        dns:
+                            latestDNS,
+
+                        traffic:
+                            latestTraffic,
+
+                        traceroute:
+                            latestTraceroute
+
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.error ||
+                "Report generation failed."
+            );
+
+        }
+
+
+        document.getElementById(
+            "reportStatus"
+        ).innerHTML = `
+
+            Report created successfully.
+
+            <br><br>
+
+            <a
+                href="/reports/${data.filename}"
+                target="_blank"
+                style="color:#38bdf8;"
+            >
+                Open Security Report
+            </a>
+
+        `;
+
+
+        showToast(
+            "Security report generated."
+        );
+
+    } catch (error) {
+
+        showToast(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   INITIALIZATION
+============================================================ */
+
+async function initializeDashboard() {
+
+    try {
+
+        const response =
+            await fetch("/");
+
+        const data =
+            await response.json();
+
+
+        if (
+            data.status !== "online"
+        ) {
+
+            throw new Error(
+                "Backend unavailable."
+            );
+
+        }
+
+        document.getElementById(
+            "backendStatus"
+        ).textContent =
+            "● Backend Online";
+
+    } catch (error) {
+
+        document.getElementById(
+            "backendStatus"
+        ).textContent =
+            "● Backend Offline";
+
+    }
+
+
+    updateAuthorizationUI();
+
+    await loadAnalytics();
+
+    await loadHistory();
+
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initializeDashboard
+);
+
+</script>
+
+</body>
+
+</html>
